@@ -22,7 +22,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
     
-    <!-- Favicon (Gerado via código para não precisar de arquivo externo) -->
+    <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
 
     <!-- Tailwind CSS -->
@@ -103,12 +103,54 @@
             0% { opacity: 0; transform: translateY(-10px) }
             100% { opacity: 1; transform: translateY(0) }
         }
+
+        /* Typing Indicator */
+        .typing-indicator span {
+            animation: blink 1.4s infinite both;
+            height: 5px;
+            width: 5px;
+            background-color: #38bdf8;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 1px;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink {
+            0% { opacity: 0.2; }
+            20% { opacity: 1; }
+            100% { opacity: 0.2; }
+        }
+
+        /* Exit Intent Popup */
+        #exit-popup {
+            transition: opacity 0.3s ease-in-out;
+        }
+        #exit-popup.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #exit-popup:not(.hidden) {
+            opacity: 1;
+            pointer-events: auto;
+        }
     </style>
 </head>
 <body class="bg-mesh">
 
+    <!-- Trust Bar (Topo) -->
+    <div class="bg-blue-600/20 backdrop-blur-md border-b border-blue-500/10 py-2 text-center relative z-[60]">
+        <p class="text-[10px] md:text-xs font-bold text-blue-200 tracking-wider uppercase flex justify-center items-center gap-4">
+            <span><i class="fas fa-shield-alt mr-1"></i> Dados Criptografados</span>
+            <span class="hidden md:inline">|</span>
+            <span><i class="fas fa-lock mr-1"></i> Segurança LGPD</span>
+            <span class="hidden md:inline">|</span>
+            <span><i class="fas fa-check-circle mr-1"></i> Setup em 24h</span>
+        </p>
+    </div>
+
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 px-4 md:px-6 py-4">
+    <nav class="fixed w-full z-50 px-4 md:px-6 py-4 top-8">
         <div class="max-w-7xl mx-auto glass rounded-full px-4 md:px-8 py-3 flex justify-between items-center border border-white/10 shadow-2xl relative z-50">
             <!-- Logo -->
             <a href="#" class="flex items-center space-x-2 group">
@@ -120,8 +162,8 @@
             <div class="hidden lg:flex space-x-6 text-[10px] font-bold uppercase tracking-widest text-gray-400">
                 <a href="#metodologia" class="hover:text-blue-400 transition">Metodologia</a>
                 <a href="#processo" class="hover:text-white transition">Processo</a>
-                <a href="#cases" class="hover:text-white transition">Cases</a>
-                <a href="#demonstracao" class="hover:text-white transition">Demo</a>
+                <a href="#comparativo" class="hover:text-white transition">Vantagens</a>
+                <a href="#depoimentos" class="hover:text-white transition">Depoimentos</a>
                 <a href="#faq" class="hover:text-white transition">Dúvidas</a>
             </div>
 
@@ -137,13 +179,13 @@
             </div>
         </div>
 
-        <!-- Mobile Menu (Hidden by default) -->
+        <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden fixed inset-0 z-40 bg-gray-900/95 backdrop-blur-xl pt-32 px-6 transition-all duration-300">
             <div class="flex flex-col space-y-6 text-center text-xl font-bold text-white">
                 <a href="#metodologia" onclick="toggleMenu()" class="hover:text-blue-400">Metodologia</a>
                 <a href="#processo" onclick="toggleMenu()" class="hover:text-blue-400">Processo</a>
-                <a href="#cases" onclick="toggleMenu()" class="hover:text-blue-400">Cases</a>
-                <a href="#demonstracao" onclick="toggleMenu()" class="hover:text-blue-400">Demo</a>
+                <a href="#comparativo" onclick="toggleMenu()" class="hover:text-blue-400">Vantagens</a>
+                <a href="#depoimentos" onclick="toggleMenu()" class="hover:text-blue-400">Depoimentos</a>
                 <a href="#faq" onclick="toggleMenu()" class="hover:text-blue-400">Dúvidas</a>
                 <button onclick="toggleMenu()" class="absolute top-6 right-6 text-gray-400 hover:text-white">
                     <i class="fas fa-times text-3xl"></i>
@@ -153,7 +195,7 @@
     </nav>
 
     <!-- Hero Section -->
-    <header class="relative pt-32 md:pt-40 pb-16 md:pb-24 px-6 overflow-hidden text-center">
+    <header class="relative pt-32 md:pt-48 pb-16 md:pb-24 px-6 overflow-hidden text-center">
         <div class="max-w-7xl mx-auto relative z-10">
             <div class="inline-flex items-center space-x-2 glass px-4 py-1.5 rounded-full mb-8 border border-blue-500/20">
                 <span class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></span>
@@ -164,9 +206,16 @@
                 Implementamos Agentes de IA para <br class="hidden md:block"> <span class="text-gradient italic">Escalar sua Operação.</span>
             </h1>
             
-            <p class="max-w-3xl mx-auto text-sm md:text-lg text-gray-400 mb-10 font-medium leading-relaxed">
+            <p class="max-w-3xl mx-auto text-sm md:text-lg text-gray-400 mb-8 font-medium leading-relaxed">
                 Desenvolvemos e integramos "funcionários digitais" personalizados na infraestrutura da sua empresa. Tecnologia projetada para qualificar leads, agendar reuniões e vender 24/7.
             </p>
+
+            <!-- Social Proof Badges Hero -->
+            <div class="flex flex-wrap justify-center gap-4 mb-10 text-xs text-gray-400">
+                <span class="flex items-center bg-white/5 px-3 py-1 rounded-full border border-white/5"><i class="fas fa-star text-yellow-400 mr-2"></i> 4.9/5 Avaliação Média</span>
+                <span class="flex items-center bg-white/5 px-3 py-1 rounded-full border border-white/5"><i class="fas fa-building text-blue-400 mr-2"></i> +500 Empresas Atendidas</span>
+                <span class="flex items-center bg-white/5 px-3 py-1 rounded-full border border-white/5"><i class="fas fa-bolt text-purple-400 mr-2"></i> Implantação Rápida</span>
+            </div>
 
             <div class="flex flex-col sm:flex-row justify-center gap-4 mb-16 px-4">
                 <a href="#processo" class="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white rounded-2xl font-black text-sm md:text-base shadow-2xl hover:bg-blue-500 transition-all flex items-center justify-center group">
@@ -180,7 +229,31 @@
         </div>
     </header>
 
-    <!-- Contexto de Mercado (Metodologia) -->
+    <!-- Estatísticas Animadas -->
+    <section class="py-10 border-y border-white/5 bg-white/[0.01]">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="text-3xl md:text-4xl font-black text-white mb-2 counter" data-target="15000">0</div>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Leads Qualificados</p>
+                </div>
+                <div>
+                    <div class="text-3xl md:text-4xl font-black text-white mb-2 counter" data-target="98">0</div>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">% Taxa de Resposta</p>
+                </div>
+                <div>
+                    <div class="text-3xl md:text-4xl font-black text-white mb-2 counter" data-target="3">0</div>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Segundos p/ Atender</p>
+                </div>
+                <div>
+                    <div class="text-3xl md:text-4xl font-black text-white mb-2 counter" data-target="247">0</div>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Disponibilidade 24/7</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contexto de Mercado -->
     <section id="metodologia" class="py-16 md:py-24 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="grid lg:grid-cols-2 gap-12 md:gap-16 items-center">
@@ -191,23 +264,26 @@
                     </p>
                     <div class="space-y-4 text-xs md:text-sm border-l-2 border-blue-500/30 pl-6">
                         <div class="flex items-center space-x-3">
+                            <i class="fas fa-check text-emerald-500"></i>
                             <span class="text-gray-300 font-bold">Padronização da Excelência no Atendimento.</span>
                         </div>
                         <div class="flex items-center space-x-3">
+                            <i class="fas fa-check text-emerald-500"></i>
                             <span class="text-gray-300 font-bold">Retenção de Conhecimento (Base de Dados Própria).</span>
                         </div>
                         <div class="flex items-center space-x-3">
+                            <i class="fas fa-check text-emerald-500"></i>
                             <span class="text-gray-300 font-bold">Integração nativa com seu CRM atual.</span>
                         </div>
                     </div>
                 </div>
                 <div class="reveal">
                     <div class="glass p-6 md:p-8 rounded-[2.5rem] border-white/5 bg-white/[0.01]">
-                        <h3 class="text-lg md:text-xl font-bold mb-4 text-white italic">Métricas de Performance Esperadas:</h3>
+                        <h3 class="text-lg md:text-xl font-bold mb-4 text-white italic">O impacto direto:</h3>
                         <div class="space-y-4 text-xs md:text-sm">
                             <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl text-white border border-white/5">
                                 <span>Capacidade Operacional</span>
-                                <span class="text-blue-400 font-black">Ilimitada / Simultânea</span>
+                                <span class="text-blue-400 font-black">Ilimitada</span>
                             </div>
                             <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl text-white border border-white/5">
                                 <span>Tempo Médio de Resposta</span>
@@ -224,40 +300,70 @@
         </div>
     </section>
 
+    <!-- Comparativo Problema vs Solução -->
+    <section id="comparativo" class="py-16 md:py-24 px-6 bg-white/[0.01]">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-5xl font-black mb-4 text-white">Por que <span class="text-blue-500">Automatizar?</span></h2>
+                <p class="text-gray-400 text-xs md:text-sm">A diferença clara entre o modelo tradicional e a eficiência da IA.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 reveal">
+                <!-- Lado Problema -->
+                <div class="p-8 rounded-[2rem] border border-red-500/10 bg-red-500/[0.02]">
+                    <h3 class="text-xl font-bold text-red-400 mb-6 flex items-center"><i class="fas fa-user-clock mr-3"></i> Atendimento Tradicional</h3>
+                    <ul class="space-y-4 text-sm text-gray-400">
+                        <li class="flex items-start"><i class="fas fa-times text-red-500 mt-1 mr-3"></i> Resposta demora horas ou dias.</li>
+                        <li class="flex items-start"><i class="fas fa-times text-red-500 mt-1 mr-3"></i> Equipe sobrecarregada com perguntas repetitivas.</li>
+                        <li class="flex items-start"><i class="fas fa-times text-red-500 mt-1 mr-3"></i> Perda de leads fora do horário comercial.</li>
+                        <li class="flex items-start"><i class="fas fa-times text-red-500 mt-1 mr-3"></i> Custo alto para escalar a equipe.</li>
+                    </ul>
+                </div>
+                
+                <!-- Lado Solução -->
+                <div class="p-8 rounded-[2rem] border border-emerald-500/20 bg-emerald-500/[0.05] relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">Recomendado</div>
+                    <h3 class="text-xl font-bold text-emerald-400 mb-6 flex items-center"><i class="fas fa-robot mr-3"></i> Com Automatize IA</h3>
+                    <ul class="space-y-4 text-sm text-gray-300">
+                        <li class="flex items-start"><i class="fas fa-check text-emerald-500 mt-1 mr-3"></i> Resposta instantânea (< 3s).</li>
+                        <li class="flex items-start"><i class="fas fa-check text-emerald-500 mt-1 mr-3"></i> Filtro automático de curiosos vs compradores.</li>
+                        <li class="flex items-start"><i class="fas fa-check text-emerald-500 mt-1 mr-3"></i> Vendas e agendamentos 24/7/365.</li>
+                        <li class="flex items-start"><i class="fas fa-check text-emerald-500 mt-1 mr-3"></i> Custo fixo previsível e escalável.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Jornada do Projeto (Processo) -->
-    <section id="processo" class="py-16 md:py-24 px-6 bg-white/[0.01]">
+    <section id="processo" class="py-16 md:py-24 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16 reveal">
                 <h2 class="text-3xl md:text-5xl font-black mb-4 italic text-white">Sua Jornada de <span class="text-blue-500 italic">Implementação.</span></h2>
-                <p class="text-gray-400 max-w-xl mx-auto text-xs md:text-sm">Entregamos um projeto estruturado de engenharia de dados e automação.</p>
+                <p class="text-gray-400 max-w-xl mx-auto text-xs md:text-sm">Não entregamos apenas um login. Entregamos um projeto estruturado de engenharia de dados e automação.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
-                <!-- Linha conectora -->
                 <div class="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500/0 via-blue-500/20 to-blue-500/0"></div>
 
-                <!-- Step 1 -->
                 <div class="glass p-6 rounded-3xl border-white/5 relative reveal group hover:bg-white/5 transition duration-300">
                     <div class="w-10 h-10 bg-blue-900 text-blue-400 rounded-full flex items-center justify-center font-black text-sm mb-4 border border-blue-500/30 relative z-10">01</div>
                     <h4 class="text-lg font-bold text-white mb-2">Diagnóstico</h4>
                     <p class="text-gray-400 text-xs leading-relaxed">Entendemos os seus fluxos atuais e base de conhecimento.</p>
                 </div>
 
-                <!-- Step 2 -->
                 <div class="glass p-6 rounded-3xl border-white/5 relative reveal group hover:bg-white/5 transition duration-300" style="transition-delay: 100ms;">
                     <div class="w-10 h-10 bg-blue-900 text-blue-400 rounded-full flex items-center justify-center font-black text-sm mb-4 border border-blue-500/30 relative z-10">02</div>
                     <h4 class="text-lg font-bold text-white mb-2">Engenharia</h4>
                     <p class="text-gray-400 text-xs leading-relaxed">Configuramos a IA com seus dados e scripts de conversão.</p>
                 </div>
 
-                <!-- Step 3 -->
                 <div class="glass p-6 rounded-3xl border-white/5 relative reveal group hover:bg-white/5 transition duration-300" style="transition-delay: 200ms;">
                     <div class="w-10 h-10 bg-blue-900 text-blue-400 rounded-full flex items-center justify-center font-black text-sm mb-4 border border-blue-500/30 relative z-10">03</div>
                     <h4 class="text-lg font-bold text-white mb-2">Integração</h4>
                     <p class="text-gray-400 text-xs leading-relaxed">Conectamos ao WhatsApp Business API, CRM e Agenda.</p>
                 </div>
 
-                <!-- Step 4 -->
                 <div class="glass p-6 rounded-3xl border-white/5 relative reveal group hover:bg-white/5 transition duration-300" style="transition-delay: 300ms;">
                     <div class="w-10 h-10 bg-emerald-900 text-emerald-400 rounded-full flex items-center justify-center font-black text-sm mb-4 border border-emerald-500/30 relative z-10">04</div>
                     <h4 class="text-lg font-bold text-white mb-2">Go-Live</h4>
@@ -267,70 +373,59 @@
         </div>
     </section>
 
-    <!-- Cases de Sucesso -->
-    <section id="cases" class="py-16 md:py-24 px-6 relative overflow-hidden">
+    <!-- Depoimentos -->
+    <section id="depoimentos" class="py-16 md:py-24 px-6 bg-white/[0.01]">
         <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-12 md:mb-16 reveal">
-                <h2 class="text-3xl md:text-5xl font-black mb-4 italic text-white">Impacto Real nos <span class="text-blue-500 italic">Negócios.</span></h2>
-                <p class="text-gray-400 max-w-xl mx-auto text-xs md:text-sm">Exemplos de como a nossa tecnologia foi aplicada em diferentes verticais.</p>
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-5xl font-black mb-4 text-white">O que dizem <span class="text-blue-500">nossos parceiros.</span></h2>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Case 1 -->
-                <div class="glass rounded-[2.5rem] border-white/5 reveal shadow-2xl overflow-hidden group">
-                    <div class="h-48 w-full overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=800" loading="lazy" alt="Clínica Médica" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                        <div class="absolute inset-0 bg-gradient-to-t from-gray-950 to-transparent opacity-60"></div>
-                        <div class="absolute bottom-4 left-6">
-                            <span class="text-[9px] font-black text-emerald-400 uppercase tracking-widest bg-emerald-400/20 px-3 py-1 rounded-full backdrop-blur-md">Saúde</span>
-                        </div>
-                    </div>
-                    <div class="p-6 md:p-8">
-                        <h4 class="text-lg font-bold text-white mb-2">Clínica Odonto Elite</h4>
-                        <p class="text-gray-400 text-[11px] md:text-xs mb-6 italic leading-relaxed">Implementação de triagem automática e agendamento integrado.</p>
-                        <div class="grid grid-cols-2 gap-4 border-t border-white/5 pt-6 text-white">
-                            <div><p class="text-blue-500 font-black text-lg">+42%</p><p class="text-[8px] text-gray-500 font-bold">Novos Pacientes</p></div>
-                            <div><p class="text-blue-500 font-black text-lg">24/7</p><p class="text-[8px] text-gray-500 font-bold">Atendimento</p></div>
-                        </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass p-8 rounded-3xl border-white/5 reveal">
+                    <div class="flex text-yellow-400 mb-4 text-xs"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="text-gray-300 text-sm mb-6 italic">"A implementação foi incrivelmente rápida. Em 24h já tínhamos o bot agendando consultas automaticamente. O suporte é nota 10."</p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center text-xs font-bold text-white mr-3">MR</div>
+                        <div><p class="text-white text-xs font-bold">Dr. Marcos Ribeiro</p><p class="text-[10px] text-gray-500">Diretor Clínico</p></div>
                     </div>
                 </div>
-
-                <!-- Case 2 -->
-                <div class="glass rounded-[2.5rem] border-white/5 reveal shadow-2xl overflow-hidden group">
-                    <div class="h-48 w-full overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=800" loading="lazy" alt="Escritório B2B" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                        <div class="absolute inset-0 bg-gradient-to-t from-gray-950 to-transparent opacity-60"></div>
-                        <div class="absolute bottom-4 left-6">
-                            <span class="text-[9px] font-black text-purple-400 uppercase tracking-widest bg-purple-400/20 px-3 py-1 rounded-full backdrop-blur-md">Serviços B2B</span>
-                        </div>
-                    </div>
-                    <div class="p-6 md:p-8">
-                        <h4 class="text-lg font-bold text-white mb-2">Consultoria Prime</h4>
-                        <p class="text-gray-400 text-[11px] md:text-xs mb-6 italic leading-relaxed">Automação da qualificação de leads (SDR AI) para filtrar clientes ideais.</p>
-                        <div class="grid grid-cols-2 gap-4 border-t border-white/5 pt-6 text-white">
-                            <div><p class="text-blue-500 font-black text-lg">3.5x</p><p class="text-[8px] text-gray-500 font-bold">Vendas Fechadas</p></div>
-                            <div><p class="text-blue-500 font-black text-lg">-60%</p><p class="text-[8px] text-gray-500 font-bold">Custo de Aquisição</p></div>
-                        </div>
+                <div class="glass p-8 rounded-3xl border-white/5 reveal" style="transition-delay: 100ms;">
+                    <div class="flex text-yellow-400 mb-4 text-xs"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="text-gray-300 text-sm mb-6 italic">"Reduzimos nosso tempo de resposta de 2 horas para 5 segundos. A taxa de conversão do site dobrou no primeiro mês."</p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center text-xs font-bold text-white mr-3">AL</div>
+                        <div><p class="text-white text-xs font-bold">Ana Luiza</p><p class="text-[10px] text-gray-500">Gerente de Marketing</p></div>
                     </div>
                 </div>
+                <div class="glass p-8 rounded-3xl border-white/5 reveal" style="transition-delay: 200ms;">
+                    <div class="flex text-yellow-400 mb-4 text-xs"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="text-gray-300 text-sm mb-6 italic">"A qualificação é perfeita. Meu time comercial só fala com quem realmente quer comprar. Economia de tempo absurda."</p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center text-xs font-bold text-white mr-3">CP</div>
+                        <div><p class="text-white text-xs font-bold">Carlos Pereira</p><p class="text-[10px] text-gray-500">CEO Imobiliária</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                <!-- Case 3 -->
-                <div class="glass rounded-[2.5rem] border-white/5 reveal shadow-2xl overflow-hidden group">
-                    <div class="h-48 w-full overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=800" loading="lazy" alt="E-commerce" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                        <div class="absolute inset-0 bg-gradient-to-t from-gray-950 to-transparent opacity-60"></div>
-                        <div class="absolute bottom-4 left-6">
-                            <span class="text-[9px] font-black text-blue-400 uppercase tracking-widest bg-blue-400/20 px-3 py-1 rounded-full backdrop-blur-md">Varejo Digital</span>
-                        </div>
-                    </div>
-                    <div class="p-6 md:p-8">
-                        <h4 class="text-lg font-bold text-white mb-2">Tech Store Brasil</h4>
-                        <p class="text-gray-400 text-[11px] md:text-xs mb-6 italic leading-relaxed">Agente de suporte e recuperação de vendas com alta personalização.</p>
-                        <div class="grid grid-cols-2 gap-4 border-t border-white/5 pt-6 text-white">
-                            <div><p class="text-blue-500 font-black text-lg">+28%</p><p class="text-[8px] text-gray-500 font-bold">Taxa de Conversão</p></div>
-                            <div><p class="text-blue-500 font-black text-lg">Auto</p><p class="text-[8px] text-gray-500 font-bold">Escala Global</p></div>
-                        </div>
-                    </div>
+    <!-- Garantias -->
+    <section class="py-12 px-6">
+        <div class="max-w-5xl mx-auto glass rounded-3xl p-8 border border-white/10">
+            <div class="grid md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-white/10">
+                <div class="p-4">
+                    <i class="fas fa-shield-alt text-3xl text-blue-500 mb-4"></i>
+                    <h4 class="font-bold text-white mb-2">Dados Seguros</h4>
+                    <p class="text-xs text-gray-400">Criptografia de ponta a ponta e conformidade total com a LGPD.</p>
+                </div>
+                <div class="p-4">
+                    <i class="fas fa-headset text-3xl text-purple-500 mb-4"></i>
+                    <h4 class="font-bold text-white mb-2">Suporte Premium</h4>
+                    <p class="text-xs text-gray-400">Acompanhamento dedicado durante toda a fase de implementação.</p>
+                </div>
+                <div class="p-4">
+                    <i class="fas fa-rocket text-3xl text-emerald-500 mb-4"></i>
+                    <h4 class="font-bold text-white mb-2">Uptime 99.9%</h4>
+                    <p class="text-xs text-gray-400">Garantia de estabilidade para que sua operação nunca pare.</p>
                 </div>
             </div>
         </div>
@@ -349,6 +444,9 @@
                 </div>
                 <div id="chatBox" class="flex-grow overflow-y-auto p-4 md:p-6 space-y-4 bg-gray-950/20 scroll-smooth">
                     <div class="flex justify-start"><div class="glass text-blue-100 p-4 rounded-2xl rounded-bl-none max-w-[85%] border border-blue-500/10 text-[11px] md:text-xs chat-bubble">Olá! Sou o assistente virtual da Automatize IA. Estou aqui para esclarecer como a nossa tecnologia pode ser adaptada ao seu modelo de negócio. Qual é o seu setor de atuação?</div></div>
+                </div>
+                <div id="typing-indicator" class="hidden px-6 py-2 text-gray-500 text-xs typing-indicator">
+                    <span></span><span></span><span></span>
                 </div>
                 <div class="p-4 bg-white/5 border-t border-white/5 flex space-x-3">
                     <input id="chatInput" type="text" class="flex-grow bg-white/5 border border-white/10 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-white text-[11px] md:text-xs" placeholder="Faça uma pergunta sobre a implementação...">
@@ -379,11 +477,31 @@
 
                 <details class="glass rounded-2xl border border-white/5 cursor-pointer group">
                     <summary class="p-6 font-bold text-white flex justify-between items-center text-sm md:text-base">
+                        Quanto tempo leva a implementação?
+                        <span class="text-blue-500 group-open:rotate-180 transition transform"><i class="fas fa-chevron-down"></i></span>
+                    </summary>
+                    <div class="px-6 pb-6 text-gray-400 text-xs md:text-sm leading-relaxed border-t border-white/5 pt-4">
+                        Nosso setup é extremamente ágil. Na maioria dos casos, conseguimos entregar o agente configurado e treinado em até 24 a 48 horas após o recebimento dos materiais de treinamento.
+                    </div>
+                </details>
+
+                <details class="glass rounded-2xl border border-white/5 cursor-pointer group">
+                    <summary class="p-6 font-bold text-white flex justify-between items-center text-sm md:text-base">
                         Como a IA aprende sobre o meu negócio?
                         <span class="text-blue-500 group-open:rotate-180 transition transform"><i class="fas fa-chevron-down"></i></span>
                     </summary>
                     <div class="px-6 pb-6 text-gray-400 text-xs md:text-sm leading-relaxed border-t border-white/5 pt-4">
                         Utilizamos uma tecnologia chamada RAG. Nós "alimentamos" o cérebro da IA com os seus manuais, site, PDFs e históricos de conversa. Ela aprende as suas regras e preços.
+                    </div>
+                </details>
+
+                <details class="glass rounded-2xl border border-white/5 cursor-pointer group">
+                    <summary class="p-6 font-bold text-white flex justify-between items-center text-sm md:text-base">
+                        Funciona para o meu nicho?
+                        <span class="text-blue-500 group-open:rotate-180 transition transform"><i class="fas fa-chevron-down"></i></span>
+                    </summary>
+                    <div class="px-6 pb-6 text-gray-400 text-xs md:text-sm leading-relaxed border-t border-white/5 pt-4">
+                        Sim! Nossos agentes são agnósticos de setor. Já temos casos de sucesso em clínicas, imobiliárias, escritórios de advocacia, e-commerce, concessionárias e empresas B2B. A lógica de qualificação é adaptável.
                     </div>
                 </details>
 
@@ -440,6 +558,18 @@
                             <input type="text" name="nome" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:ring-2 focus:ring-blue-500 transition text-sm" placeholder="Nome Completo">
                             <input type="email" name="email" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:ring-2 focus:ring-blue-500 transition text-sm" placeholder="Email Corporativo">
                             <input type="tel" name="whatsapp" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white outline-none focus:ring-2 focus:ring-blue-500 transition text-sm" placeholder="WhatsApp (DDD)">
+                            
+                            <!-- Campo de Setor (Novo) -->
+                            <select name="setor" class="w-full bg-gray-800/50 border border-white/10 p-4 rounded-xl text-white outline-none focus:ring-2 focus:ring-blue-500 transition text-sm appearance-none">
+                                <option value="" disabled selected>Selecione seu Setor</option>
+                                <option value="Saúde/Clínica">Saúde / Clínica</option>
+                                <option value="Imobiliário">Imobiliário</option>
+                                <option value="E-commerce">E-commerce</option>
+                                <option value="Educação">Educação</option>
+                                <option value="Serviços B2B">Serviços B2B</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+
                             <button type="submit" class="w-full bg-blue-600 text-white py-4 md:py-5 rounded-2xl font-black text-sm md:text-lg hover:bg-white hover:text-black transition-all">AGENDAR DIAGNÓSTICO <i class="fas fa-arrow-right ml-2"></i></button>
                         </form>
                     </div>
@@ -449,26 +579,54 @@
     </section>
 
     <!-- Footer -->
-    <footer class="py-12 px-6 border-t border-white/5 text-center md:text-left">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
-            <div>
+    <footer class="py-12 px-6 border-t border-white/5 text-center md:text-left bg-gray-900/50">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-8">
+            <div class="col-span-1 md:col-span-2">
                 <div class="flex items-center justify-center md:justify-start space-x-2 mb-4">
                     <div class="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white shadow-lg italic">A</div>
                     <span class="text-base font-black tracking-tighter uppercase">Automatize<span class="text-blue-500 italic">.IA</span></span>
                 </div>
-                <p class="text-gray-500 text-xs">© 2025 Automatize IA. Engenharia de Agentes Autônomos.</p>
+                <p class="text-gray-500 text-xs mb-4">Especialistas em implementação de Agentes Autônomos de IA para escala global. Transformando conversas em receita.</p>
+                <div class="text-gray-600 text-[10px]">CNPJ: 00.000.000/0001-00</div>
             </div>
-            <div class="flex space-x-6 text-gray-500 text-xl">
-                <!-- Links funcionais com target_blank -->
-                <a href="https://wa.me/5599999999999" target="_blank" class="hover:text-blue-500 transition"><i class="fab fa-whatsapp"></i></a>
-                <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-linkedin"></i></a>
+            <div>
+                <h4 class="text-white font-bold text-sm mb-4">Links Úteis</h4>
+                <ul class="text-gray-500 text-xs space-y-2">
+                    <li><a href="#metodologia" class="hover:text-blue-400">Metodologia</a></li>
+                    <li><a href="#processo" class="hover:text-blue-400">Processo</a></li>
+                    <li><a href="#faq" class="hover:text-blue-400">FAQ</a></li>
+                    <li><a href="#" class="hover:text-blue-400">Termos de Uso</a></li>
+                    <li><a href="#" class="hover:text-blue-400">Política de Privacidade</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold text-sm mb-4">Contato</h4>
+                <div class="flex space-x-4 text-gray-500 text-xl mb-4 justify-center md:justify-start">
+                    <a href="https://wa.me/5599999999999" target="_blank" class="hover:text-blue-500 transition"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-blue-500 transition"><i class="fab fa-linkedin"></i></a>
+                </div>
+                <p class="text-gray-600 text-[10px]">© 2025 Automatize IA. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
 
     <!-- Floating WhatsApp -->
-    <a href="https://wa.me/5599999999999" target="_blank" class="fixed bottom-6 right-6 bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl z-[100] hover:scale-110 transition-all"><i class="fab fa-whatsapp text-2xl"></i></a>
+    <a href="https://wa.me/5599999999999" target="_blank" class="fixed bottom-6 right-6 bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl z-[100] hover:scale-110 transition-all animate-pulse"><i class="fab fa-whatsapp text-2xl"></i></a>
+
+    <!-- Exit Intent Popup -->
+    <div id="exit-popup" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="glass bg-gray-900 border border-blue-500/30 p-8 rounded-3xl max-w-md text-center relative shadow-2xl">
+            <button onclick="closePopup()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            <div class="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-400 text-3xl">
+                <i class="fas fa-gift"></i>
+            </div>
+            <h3 class="text-2xl font-black text-white mb-2">Espere! Não vá embora ainda.</h3>
+            <p class="text-gray-400 text-sm mb-6">Você está a um passo de automatizar suas vendas. Que tal um diagnóstico rápido e 100% gratuito agora?</p>
+            <a href="#contato" onclick="closePopup()" class="block w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-500 transition">QUERO MEU DIAGNÓSTICO</a>
+            <button onclick="closePopup()" class="block w-full mt-3 text-gray-500 text-xs hover:text-white underline">Não, obrigado. Prefiro continuar manual.</button>
+        </div>
+    </div>
 
     <script>
         const apiKey = "AIzaSyCIqSQNtuzhNGSBlf_CYnOB4r-Md6OHdTI";
@@ -493,6 +651,7 @@
         async function sendMessage() {
             const input = document.getElementById('chatInput');
             const chatBox = document.getElementById('chatBox');
+            const typingIndicator = document.getElementById('typing-indicator');
             const msg = input.value.trim();
             if(!msg) return;
 
@@ -500,7 +659,16 @@
             input.value = "";
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            const res = await callGemini(msg, "Você é o Auto da Automatize IA. Responda como no WhatsApp: BREVE, DIRETO, AMIGÁVEL e MUITO RESUMIDO. Use emojis moderadamente. Nunca mande textões.");
+            // Show typing indicator
+            typingIndicator.classList.remove('hidden');
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const systemPrompt = "Você é o Auto, Consultor Sênior da Automatize IA. Sua missão é qualificar o lead. Seja consultivo, faça perguntas sobre o negócio dele para entender a dor. Fale sobre como a IA reduz custos e aumenta a conversão. Responda como no WhatsApp: BREVE, DIRETO e AMIGÁVEL. Use emojis moderadamente.";
+            
+            const res = await callGemini(msg, systemPrompt);
+            
+            // Hide typing indicator and show response
+            typingIndicator.classList.add('hidden');
             chatBox.innerHTML += `<div class="flex justify-start"><div class="bg-blue-600/20 text-blue-100 p-4 rounded-2xl rounded-bl-none max-w-[85%] border border-blue-500/10 text-[11px] md:text-xs chat-bubble">${res}</div></div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
         }
@@ -523,38 +691,52 @@
                 if (el.getBoundingClientRect().top < window.innerHeight - 50) el.classList.add("active");
             });
         }
+        
+        // Counter Animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const increment = target / 50;
+                
+                const updateCounter = () => {
+                    const count = +counter.innerText;
+                    if(count < target) {
+                        counter.innerText = Math.ceil(count + increment);
+                        setTimeout(updateCounter, 20);
+                    } else {
+                        counter.innerText = target + (target > 100 ? '+' : '%');
+                        if (target == 3) counter.innerText = '< 3s'; 
+                        if (target == 247) counter.innerText = '24/7'; 
+                    }
+                };
+                updateCounter();
+            });
+        }
+
+        // Intersection Observer for Counters
+        let countersTriggered = false;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !countersTriggered) {
+                    animateCounters();
+                    countersTriggered = true;
+                }
+            });
+        });
+        const statsSection = document.querySelector('.counter')?.parentElement?.parentElement;
+        if(statsSection) observer.observe(statsSection);
+
         window.addEventListener("scroll", reveal);
         document.addEventListener("DOMContentLoaded", () => { reveal(); updateROI(); });
 
         function handleSubmit(e) {
             e.preventDefault();
             const btn = e.target.querySelector('button');
-            const originalText = btn.innerHTML; // Salva o texto original
             const formData = new FormData(e.target);
-            
-            // Validação simples
-            if(!formData.get('nome') || !formData.get('email') || !formData.get('whatsapp')) return;
-
-            const message = `Olá! Solicitei um diagnóstico no site.%0A👤 *Nome:* ${formData.get('nome')}%0A📱 *WhatsApp:* ${formData.get('whatsapp')}`;
-            
-            btn.innerHTML = '<i class="fas fa-spinner animate-spin"></i> Enviando...';
-            btn.disabled = true;
-
-            setTimeout(() => {
-                window.open(`https://wa.me/5599999999999?text=${message}`, '_blank');
-                
-                // Feedback visual de sucesso
-                btn.innerHTML = 'Enviado! ✅';
-                btn.classList.add('bg-emerald-600');
-                e.target.reset();
-                
-                // Reseta o botão após 3 segundos
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                    btn.classList.remove('bg-emerald-600');
-                }, 3000);
-            }, 800);
+            const message = `Olá! Solicitei um diagnóstico no site.%0A👤 *Nome:* ${formData.get('nome')}%0A📧 *Email:* ${formData.get('email')}%0A📱 *WhatsApp:* ${formData.get('whatsapp')}%0A🏢 *Setor:* ${formData.get('setor')}`;
+            window.open(`https://wa.me/5599999999999?text=${message}`, '_blank');
+            btn.innerHTML = 'ENVIADO! ✅';
         }
 
         function toggleMenu() {
@@ -562,6 +744,21 @@
             const btn = document.getElementById('menu-btn');
             menu.classList.toggle('hidden');
         }
+
+        // Exit Intent Logic
+        let popupShown = false;
+        const exitPopup = document.getElementById('exit-popup');
+
+        function closePopup() {
+            exitPopup.classList.add('hidden');
+        }
+
+        document.addEventListener('mouseleave', (e) => {
+            if (e.clientY < 0 && !popupShown) {
+                exitPopup.classList.remove('hidden');
+                popupShown = true;
+            }
+        });
 
         document.getElementById('chatInput')?.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
     </script>
