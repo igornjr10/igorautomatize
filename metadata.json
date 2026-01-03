@@ -1,0 +1,8 @@
+
+{
+  "name": "Automatize Life: Produtividade e Finanças",
+  "description": "Uma plataforma unificada e inteligente para monitoramento de hábitos, gestão de produtividade e controle financeiro com auxílio de IA (Gemini).",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
